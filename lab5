@@ -1,0 +1,37 @@
+odiljonasmatov@MacBook-Pro--Odilchon-Asmatov ~ % psql -h localhost -U odiljonasmatov -d postgres
+
+psql (14.21 (Homebrew))
+Type "help" for help.
+
+postgres=# CREATE DATABASE university;
+CREATE DATABASE
+postgres=# \l
+                                      List of databases
+    Name    |     Owner      | Encoding | Collate | Ctype |         Access privileges         
+------------+----------------+----------+---------+-------+-----------------------------------
+ postgres   | odiljonasmatov | UTF8     | C       | UTF-8 | 
+ template0  | odiljonasmatov | UTF8     | C       | UTF-8 | =c/odiljonasmatov                +
+            |                |          |         |       | odiljonasmatov=CTc/odiljonasmatov
+ template1  | odiljonasmatov | UTF8     | C       | UTF-8 | =c/odiljonasmatov                +
+            |                |          |         |       | odiljonasmatov=CTc/odiljonasmatov
+ university | odiljonasmatov | UTF8     | C       | UTF-8 | 
+(4 rows)
+
+postgres=# \c university
+You are now connected to database "university" as user "odiljonasmatov".
+university=# \c postgres
+You are now connected to database "postgres" as user "odiljonasmatov".
+postgres=# DROP DATABASE university;
+DROP DATABASE
+postgres=# \l
+                                      List of databases
+   Name    |     Owner      | Encoding | Collate | Ctype |         Access privileges         
+-----------+----------------+----------+---------+-------+-----------------------------------
+ postgres  | odiljonasmatov | UTF8     | C       | UTF-8 | 
+ template0 | odiljonasmatov | UTF8     | C       | UTF-8 | =c/odiljonasmatov                +
+           |                |          |         |       | odiljonasmatov=CTc/odiljonasmatov
+ template1 | odiljonasmatov | UTF8     | C       | UTF-8 | =c/odiljonasmatov                +
+           |                |          |         |       | odiljonasmatov=CTc/odiljonasmatov
+(3 rows)
+
+postgres=# 
