@@ -1,0 +1,63 @@
+postgres=# CREATE TABLE students (
+    student_id SERIAL PRIMARY KEY,
+    first_name VARCHAR(50) NOT NULL,
+    last_name VARCHAR(50) NOT NULL,
+    email VARCHAR(100) UNIQUE NOT NULL,
+    faculty VARCHAR(100)
+);
+CREATE TABLE
+postgres=# \d students
+                                          Table "public.students"
+   Column   |          Type          | Collation | Nullable |                   Default                    
+------------+------------------------+-----------+----------+----------------------------------------------
+ student_id | integer                |           | not null | nextval('students_student_id_seq'::regclass)
+ first_name | character varying(50)  |           | not null | 
+ last_name  | character varying(50)  |           | not null | 
+ email      | character varying(100) |           | not null | 
+ faculty    | character varying(100) |           |          | 
+Indexes:
+    "students_pkey" PRIMARY KEY, btree (student_id)
+    "students_email_key" UNIQUE CONSTRAINT, btree (email)
+
+postgres=# ALTER TABLE students
+ADD COLUMN date_of_birth DATE;
+ALTER TABLE
+postgres=# \d students
+                                           Table "public.students"
+    Column     |          Type          | Collation | Nullable |                   Default                    
+---------------+------------------------+-----------+----------+----------------------------------------------
+ student_id    | integer                |           | not null | nextval('students_student_id_seq'::regclass)
+ first_name    | character varying(50)  |           | not null | 
+ last_name     | character varying(50)  |           | not null | 
+ email         | character varying(100) |           | not null | 
+ faculty       | character varying(100) |           |          | 
+ date_of_birth | date                   |           |          | 
+Indexes:
+    "students_pkey" PRIMARY KEY, btree (student_id)
+    "students_email_key" UNIQUE CONSTRAINT, btree (email)
+
+postgres=# ALTER TABLE students
+DROP COLUMN faculty;
+ALTER TABLE
+postgres=# ALTER TABLE students
+ALTER COLUMN first_name TYPE TEXT;
+ALTER TABLE
+postgres=# ALTER TABLE students
+ADD CONSTRAINT unique_student_email UNIQUE (email);
+ALTER TABLE
+postgres=# ALTER TABLE students
+RENAME COLUMN email TO email_address;
+ALTER TABLE
+postgres=# ALTER TABLE students
+RENAME TO university_students;
+ALTER TABLE
+postgres=# \dt
+                   List of relations
+ Schema |        Name         | Type  |     Owner      
+--------+---------------------+-------+----------------
+ public | university_students | table | odiljonasmatov
+(1 row)
+
+postgres=# DROP TABLE IF EXISTS university_students;
+DROP TABLE
+postgres=# 
