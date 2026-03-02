@@ -1,0 +1,109 @@
+DROP TABLE IF EXISTS accounts;
+
+CREATE TABLE accounts (
+    account_id SERIAL PRIMARY KEY,
+    account_holder VARCHAR(100) NOT NULL,
+    balance NUMERIC(10,2) NOT NULL DEFAULT 0.00
+);
+
+INSERT INTO accounts (account_holder, balance)
+VALUES
+('Alice', 500.00),
+('Bob', 200.00);
+
+BEGIN;
+
+UPDATE accounts
+SET balance = balance - 100
+WHERE account_id = 1;
+
+UPDATE accounts
+SET balance = balance + 100
+WHERE account_id = 2;
+
+COMMIT;
+
+BEGIN;
+
+SELECT balance
+FROM accounts
+WHERE account_id = 1;
+
+UPDATE accounts
+SET balance = balance - 500
+WHERE account_id = 1;
+
+UPDATE accounts
+SET balance = balance + 500
+WHERE account_id = 1;
+
+COMMIT;
+
+BEGIN;
+
+SET TRANSACTION ISOLATION LEVEL SERIALIZABLE;
+
+UPDATE accounts
+SET balance = balance * 1.75
+WHERE account_id = 2;
+
+COMMIT;
+
+DROP TABLE IF EXISTS orders;
+DROP TABLE IF EXISTS customers CASCADE;
+DROP TABLE IF EXISTS products;
+
+CREATE TABLE products (
+    product_id SERIAL PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    price NUMERIC(10,2) NOT NULL,
+    quantity INT NOT NULL CHECK (quantity >= 0)
+);
+
+CREATE TABLE customers (
+    customer_id SERIAL PRIMARY KEY,
+    first_name VARCHAR(50) NOT NULL,
+    last_name VARCHAR(50) NOT NULL,
+    email VARCHAR(100) UNIQUE
+);
+
+CREATE TABLE orders (
+    purchase_history_id SERIAL PRIMARY KEY,
+    customer_id INT NOT NULL REFERENCES customers(customer_id),
+    product_id INT NOT NULL REFERENCES products(product_id),
+    quantity INT NOT NULL CHECK (quantity > 0),
+    purchase_price NUMERIC(10,2) NOT NULL,
+    order_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+INSERT INTO customers (first_name, last_name, email) VALUES
+('Alice', 'Smith', 'alice@example.com'),
+('Bob', 'Jones', 'bob@example.com');
+
+INSERT INTO products (product_id, name, price, quantity) VALUES
+(5, 'Premium Widget', 10.00, 15),
+(6, 'Basic Gadget', 5.00, 50);
+
+BEGIN;
+
+INSERT INTO orders (customer_id, product_id, quantity, purchase_price)
+VALUES (1, 5, 10, 10.00);
+
+UPDATE products
+SET quantity = quantity - 10
+WHERE product_id = 5;
+
+COMMIT;
+
+BEGIN;
+
+SET TRANSACTION ISOLATION LEVEL SERIALIZABLE;
+
+INSERT INTO orders (customer_id, product_id, quantity, purchase_price)
+VALUES (1, 5, 5, 10.00);
+
+UPDATE products
+SET quantity = quantity - 5
+WHERE product_id = 5;
+
+COMMIT;
