@@ -1,0 +1,88 @@
+Last login: Mon Feb 16 22:07:21 on ttys000
+odiljonasmatov@MacBook-Pro--Odilchon-Asmatov ~ % psql -h localhost -U odiljonasmatov -d university
+psql: error: connection to server at "localhost" (::1), port 5432 failed: FATAL:  database "university" does not exist
+odiljonasmatov@MacBook-Pro--Odilchon-Asmatov ~ % psql -h localhost -U odiljonasmatov -d postgres
+psql (14.21 (Homebrew))
+Type "help" for help.
+
+postgres=# CREATE DATABASE university;
+CREATE DATABASE
+postgres=# CREATE DATABASE
+postgres-# \q
+odiljonasmatov@MacBook-Pro--Odilchon-Asmatov ~ % psql -h localhost -U odiljonasmatov -d university
+psql (14.21 (Homebrew))
+Type "help" for help.
+
+university=# CREATE TABLE students (
+    student_id SERIAL PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    email VARCHAR(150)
+);
+CREATE TABLE
+university=# \d students
+                                          Table "public.students"
+   Column   |          Type          | Collation | Nullable |                   Default                    
+------------+------------------------+-----------+----------+----------------------------------------------
+ student_id | integer                |           | not null | nextval('students_student_id_seq'::regclass)
+ name       | character varying(100) |           | not null | 
+ email      | character varying(150) |           |          | 
+Indexes:
+    "students_pkey" PRIMARY KEY, btree (student_id)
+
+university=# INSERT INTO students (student_id, name, email)
+VALUES (1, 'Alice', 'alice@test.com');
+INSERT 0 1
+university=# INSERT INTO students (student_id, name, email)
+VALUES (1, 'Bob', 'bob@test.com');
+ERROR:  duplicate key value violates unique constraint "students_pkey"
+DETAIL:  Key (student_id)=(1) already exists.
+university=# INSERT INTO students (student_id, name, email)
+VALUES (NULL, 'Test', 'test@test.com');
+ERROR:  null value in column "student_id" of relation "students" violates not-null constraint
+DETAIL:  Failing row contains (null, Test, test@test.com).
+university=# 
+
+university=# Last login: Mon Feb 16 22:07:21 on ttys000
+odiljonasmatov@MacBook-Pro--Odilchon-Asmatov ~ % psql -h localhost -U odiljonasmatov -d university
+odiljonasmatov@MacBook-Pro--Odilchon-Asmatov ~ % psql -h localhost -U odiljonasmatov -d university
+psql (14.21 (Homebrew))
+Type "help" for help.
+
+university=# \di
+                     List of relations
+ Schema |     Name      | Type  |     Owner      |  Table   
+--------+---------------+-------+----------------+----------
+ public | students_pkey | index | odiljonasmatov | students
+(1 row)
+
+university=# CREATE TABLE course_enrollments (
+    student_id INTEGER,
+    course_id INTEGER,
+    semester VARCHAR(20),
+    PRIMARY KEY (student_id, course_id, semester)
+);
+CREATE TABLE
+university=# \d course_enrollments
+                  Table "public.course_enrollments"
+   Column   |         Type          | Collation | Nullable | Default 
+------------+-----------------------+-----------+----------+---------
+ student_id | integer               |           | not null | 
+ course_id  | integer               |           | not null | 
+ semester   | character varying(20) |           | not null | 
+Indexes:
+    "course_enrollments_pkey" PRIMARY KEY, btree (student_id, course_id, semester)
+
+university=# INSERT INTO course_enrollments VALUES (1, 101, 'Fall2024');
+INSERT 0 1
+university=# INSERT INTO course_enrollments VALUES (1, 101, 'Fall2024');
+ERROR:  duplicate key value violates unique constraint "course_enrollments_pkey"
+DETAIL:  Key (student_id, course_id, semester)=(1, 101, Fall2024) already exists.
+university=# \di
+                               List of relations
+ Schema |          Name           | Type  |     Owner      |       Table        
+--------+-------------------------+-------+----------------+--------------------
+ public | course_enrollments_pkey | index | odiljonasmatov | course_enrollments
+ public | students_pkey           | index | odiljonasmatov | students
+(2 rows)
+
+(END)
